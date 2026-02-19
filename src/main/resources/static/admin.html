@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            color: white;
+            margin: 25px 0 15px;
+            font-size: 1.8em;
+            font-weight: 600;
+            border-left: 5px solid #ffd700;
+            padding-left: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        #pendingUsers {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        #pendingUsers > div {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-left: 5px solid #667eea;
+        }
+
+        #pendingUsers > div:hover {
+            transform: translateX(10px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        #pendingUsers p {
+            font-size: 1.1em;
+            color: #333;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #pendingUsers p:before {
+            content: '👤';
+            font-size: 1.2em;
+            margin-right: 5px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        #addCandidateForm {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: flex;
+            gap: 20px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        #addCandidateForm label {
+            display: block;
+            margin-bottom: 8px;
+            color: #667eea;
+            font-weight: 600;
+            font-size: 1.1em;
+            letter-spacing: 1px;
+        }
+
+        #addCandidateForm input {
+            width: 300px;
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        #addCandidateForm input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            background: white;
+        }
+
+        #addCandidateForm input::placeholder {
+            color: #999;
+        }
+
+        #addCandidateForm button {
+            padding: 12px 35px;
+            font-size: 1.1em;
+        }
+
+        /* Scrollbar styling */
+        #pendingUsers::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        #pendingUsers::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        #pendingUsers::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+        }
+
+        #pendingUsers::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            header h1 {
+                font-size: 2em;
+            }
+
+            h2 {
+                font-size: 1.5em;
+            }
+
+            #pendingUsers > div {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            #addCandidateForm {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            #addCandidateForm input {
+                width: 100%;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+
+        /* Animation for new users */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        #pendingUsers > div {
+            animation: slideIn 0.5s ease forwards;
+        }
+
+        /* Status badge styling */
+        #pendingUsers p:after {
+            content: attr(data-status);
+            background: #ffd700;
+            color: #333;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            margin-left: 10px;
+            font-weight: 600;
+        }
+
+        /* Empty state styling */
+        #pendingUsers:empty:before {
+            content: 'No pending users at the moment';
+            display: block;
+            text-align: center;
+            color: #999;
+            font-style: italic;
+            padding: 40px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Admin Dashboard</h1>
+    </header>
+    <h2>Pending Users</h2>
+    <div id="pendingUsers"></div>
+
+    <h2>Add Candidate</h2>
+    <form id="addCandidateForm">
+        <label for="name">Candidate Name</label>
+        <input type="text" id="name" name="name" placeholder="Enter candidate name..." required>
+        <button type="submit">Add Candidate</button>
+    </form>
+
+    <script>
+        async function loadPendingUsers() {
+            const response = await fetch('/users/pending');
+            const users = await response.json();
+            const pendingUsersDiv = document.getElementById('pendingUsers');
+            users.forEach(user => {
+                const userDiv = document.createElement('div');
+                userDiv.innerHTML = `<p>${user.username} - ${user.status}</p>
+                    <button onclick="authorizeUser(${user.id})">Authorize</button>`;
+                pendingUsersDiv.appendChild(userDiv);
+            });
+        }
+
+        async function authorizeUser(userId) {
+            await fetch(`/users/authorize/${userId}`, { method: 'PUT' });
+            alert('User authorized successfully!');
+        }
+
+        document.getElementById('addCandidateForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const name = e.target.name.value;
+            await fetch('/admin/add-candidate', {
+                method: 'POST',
+                body: JSON.stringify({ name }),
+                headers: { 'Content-Type': 'application/json' }
+            });
+            alert('Candidate added successfully!');
+        };
+
+        loadPendingUsers();
+    </script>
+</body>
+</html>

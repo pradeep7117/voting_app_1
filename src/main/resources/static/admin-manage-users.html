@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EC Dashboard - Manage Users</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 30px;
+            animation: gradientBG 15s ease infinite;
+            background-size: 400% 400%;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        header {
+            background: white;
+            padding: 25px 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            text-align: center;
+            border-left: 8px solid #ffd700;
+            border-right: 8px solid #ffd700;
+            animation: slideDown 0.8s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        header h1 {
+            color: #1e3c72;
+            font-size: 2.2em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        button {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 8px 25px rgba(30, 60, 114, 0.5);
+            display: block;
+            margin: 0 auto 30px auto;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #ffd700;
+        }
+
+        button:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 12px 35px rgba(255, 215, 0, 0.4);
+            background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+            border-color: white;
+        }
+
+        button:hover:before {
+            left: 100%;
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        #usersTable {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            overflow-x: auto;
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0 auto;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        th {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            padding: 15px;
+            font-size: 1.1em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: none;
+        }
+
+        td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #e0e0e0;
+            background: white;
+            font-size: 1em;
+        }
+
+        tr {
+            transition: all 0.3s ease;
+        }
+
+        tr:hover td {
+            background: #f8f9fa;
+            transform: scale(1.01);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        select {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 2px solid #1e3c72;
+            font-size: 0.95em;
+            font-weight: 500;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 130px;
+        }
+
+        select:hover {
+            border-color: #ffd700;
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.3);
+        }
+
+        td:last-child button {
+            padding: 8px 20px;
+            font-size: 0.95em;
+            margin: 0;
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+            border: none;
+        }
+
+        td:last-child button:hover {
+            background: linear-gradient(135deg, #20c997 0%, #28a745 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.5);
+        }
+
+        /* Status colors in dropdown */
+        option[value="PENDING"] {
+            background: #ffc107;
+            color: #000;
+        }
+
+        option[value="AUTHORIZED"] {
+            background: #28a745;
+            color: white;
+        }
+
+        option[value="REJECTED"] {
+            background: #dc3545;
+            color: white;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 12px;
+            height: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+        }
+
+        /* Responsive design */
+        @media (max-width: 1024px) {
+            table {
+                font-size: 0.9em;
+            }
+            
+            th, td {
+                padding: 12px;
+            }
+            
+            select {
+                min-width: 110px;
+                padding: 8px 12px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            button {
+                padding: 12px 30px;
+                font-size: 1.1em;
+            }
+
+            #usersTable {
+                padding: 15px;
+            }
+
+            th, td {
+                padding: 10px;
+                font-size: 0.85em;
+            }
+
+            select {
+                min-width: 100px;
+                padding: 6px 10px;
+                font-size: 0.85em;
+            }
+
+            td:last-child button {
+                padding: 6px 15px;
+                font-size: 0.85em;
+            }
+        }
+
+        /* Loading animation */
+        #usersTable:empty:before {
+            content: 'Loading users data...';
+            display: block;
+            text-align: center;
+            color: #1e3c72;
+            font-size: 1.2em;
+            padding: 50px;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        /* Table row animations */
+        @keyframes rowAppear {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        tr {
+            animation: rowAppear 0.5s ease forwards;
+            animation-delay: calc(var(--row-index) * 0.1s);
+            opacity: 0;
+        }
+
+        /* Status badge styling */
+        select {
+            font-weight: 600;
+        }
+
+        /* ID column styling */
+        td:first-child {
+            font-weight: 700;
+            color: #1e3c72;
+            background: rgba(30, 60, 114, 0.05);
+        }
+
+        /* Hover effect for table container */
+        #usersTable:hover {
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+        }
+
+        /* Empty state styling */
+        table:empty {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>EC Dashboard - Manage Users</h1>
+    </header>
+
+    <button onclick="viewUsers()">View Users</button>
+    <div id="usersTable"></div>
+
+    <script>
+        async function viewUsers() {
+            console.log("Fetching users...");
+            try {
+                const response = await fetch('/admin/users');
+                if (!response.ok) {
+                    throw new Error("Failed to fetch users");
+                }
+                const users = await response.json();
+                console.log("Users fetched successfully:", users);
+
+                let tableHTML = `
+                    <table border="1">
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Address</th>
+                            <th>Gender</th>
+                            <th>Age</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                `;
+
+                users.forEach((user, index) => {
+                    tableHTML += `
+                        <tr style="--row-index: ${index};">
+                            <td>${user.id}</td>
+                            <td>${user.username}</td>
+                            <td>${user.address}</td>
+                            <td>${user.gender}</td>
+                            <td>${user.age}</td>
+                            <td>
+                                <select id="status-${user.id}">
+                                    <option value="PENDING" ${user.status === "PENDING" ? "selected" : ""}>PENDING</option>
+                                    <option value="AUTHORIZED" ${user.status === "AUTHORIZED" ? "selected" : ""}>AUTHORIZED</option>
+                                    <option value="REJECTED" ${user.status === "REJECTED" ? "selected" : ""}>REJECTED</option>
+                                </select>
+                            </td>
+                            <td>
+                                <button onclick="updateUserStatus(${user.id})">Update Status</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                tableHTML += `</table>`;
+                document.getElementById('usersTable').innerHTML = tableHTML;
+            } catch (error) {
+                console.error("Error fetching users:", error);
+            }
+        }
+
+        // ✅ Make updateUserStatus() a global function
+        window.updateUserStatus = async function(userId) {
+            const newStatus = document.getElementById(`status-${userId}`).value;
+            console.log(`Updating user ${userId} status to ${newStatus}...`);
+            try {
+                const response = await fetch(`/admin/users/${userId}/status?newStatus=${newStatus}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (response.ok) {
+                    alert('User status updated successfully!');
+                    viewUsers(); // Refresh table after update
+                } else {
+                    alert('Error updating user status.');
+                }
+            } catch (error) {
+                console.error("Error updating user status:", error);
+            }
+        };
+
+        // ✅ Automatically load users when the page is displayed
+        document.addEventListener("DOMContentLoaded", function() {
+            console.log("Manage Users Page Loaded. Fetching users...");
+            viewUsers();
+        });
+    </script>
+</body>
+</html>

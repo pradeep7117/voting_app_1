@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Voting Application System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            animation: gradientBG 15s ease infinite;
+            background-size: 400% 400%;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Decorative background elements */
+        body:before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+            z-index: 0;
+        }
+
+        body:after {
+            content: '';
+            position: absolute;
+            bottom: -50%;
+            left: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite reverse;
+            z-index: 0;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            border-bottom: 5px solid #ffd700;
+            position: relative;
+            z-index: 1;
+            animation: slideDown 0.8s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        header h1 {
+            color: #1e3c72;
+            font-size: 2.5em;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        nav {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+            position: relative;
+            z-index: 1;
+            animation: slideUp 0.8s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        nav a {
+            text-decoration: none;
+        }
+
+        nav button {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 8px 20px rgba(30, 60, 114, 0.4);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+            min-width: 200px;
+        }
+
+        nav button:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        nav button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(255, 215, 0, 0.5);
+            background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+            border-color: #ffd700;
+        }
+
+        nav button:hover:before {
+            left: 100%;
+        }
+
+        nav button:active {
+            transform: translateY(0) scale(1);
+        }
+
+        /* Hero Section with Image */
+        .hero-section {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            overflow: hidden;
+            margin: 20px 0;
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            animation: zoomIn 1s ease;
+            z-index: 1;
+        }
+
+        @keyframes zoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .hero-section:hover .hero-image {
+            transform: scale(1.05);
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(30,60,114,0.8) 0%, rgba(42,82,152,0.6) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .hero-overlay h2 {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            animation: fadeInUp 1s ease 0.3s both;
+        }
+
+        .hero-overlay p {
+            font-size: 1.5em;
+            max-width: 800px;
+            line-height: 1.6;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            animation: fadeInUp 1s ease 0.6s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 40px 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Features Section */
+        .features {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 50px 0;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            width: 300px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            backdrop-filter: blur(10px);
+            animation: cardFade 0.8s ease;
+            animation-fill-mode: both;
+        }
+
+        .feature-card:nth-child(1) { animation-delay: 0.2s; }
+        .feature-card:nth-child(2) { animation-delay: 0.4s; }
+        .feature-card:nth-child(3) { animation-delay: 0.6s; }
+
+        @keyframes cardFade {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: #ffd700;
+            box-shadow: 0 25px 45px rgba(255, 215, 0, 0.3);
+        }
+
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            color: #1e3c72;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .feature-card p {
+            color: #666;
+            line-height: 1.6;
+            font-size: 1.1em;
+        }
+
+        /* Windows Activation Message */
+        .activation-message {
+            background: linear-gradient(135deg, #333, #555);
+            color: #ffd700;
+            text-align: center;
+            padding: 12px;
+            font-size: 1.1em;
+            letter-spacing: 1px;
+            border-top: 2px solid #ffd700;
+            border-bottom: 2px solid #ffd700;
+            position: relative;
+            z-index: 1;
+        }
+
+        .activation-message i {
+            margin-right: 10px;
+            color: #ffd700;
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            text-align: center;
+            padding: 25px;
+            border-top: 5px solid #ffd700;
+            position: relative;
+            z-index: 1;
+            margin-top: auto;
+        }
+
+        footer p {
+            font-size: 1.2em;
+            letter-spacing: 2px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        /* Responsive design */
+        @media (max-width: 1024px) {
+            header h1 {
+                font-size: 2em;
+            }
+
+            nav button {
+                padding: 12px 25px;
+                min-width: 160px;
+                font-size: 1em;
+            }
+
+            .hero-section {
+                height: 400px;
+            }
+
+            .hero-overlay h2 {
+                font-size: 2.5em;
+            }
+
+            .hero-overlay p {
+                font-size: 1.2em;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.5em;
+                letter-spacing: 2px;
+            }
+
+            nav {
+                flex-direction: column;
+                align-items: center;
+                padding: 20px;
+            }
+
+            nav button {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .hero-section {
+                height: 350px;
+                margin: 10px 0;
+            }
+
+            .hero-overlay h2 {
+                font-size: 2em;
+            }
+
+            .hero-overlay p {
+                font-size: 1.1em;
+            }
+
+            .feature-card {
+                width: 100%;
+                max-width: 350px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.2em;
+            }
+
+            .hero-section {
+                height: 300px;
+            }
+
+            .hero-overlay h2 {
+                font-size: 1.5em;
+            }
+
+            .hero-overlay p {
+                font-size: 1em;
+            }
+
+            .feature-card h3 {
+                font-size: 1.5em;
+            }
+
+            footer p {
+                font-size: 1em;
+            }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            border-radius: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+        }
+
+        /* Focus visible for accessibility */
+        button:focus-visible {
+            outline: 3px solid #ffd700;
+            outline-offset: 3px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>ONLINE VOTING APPLICATION SYSTEM</h1>
+    </header>
+
+    <nav>
+        <a href="#"><button>HOME</button></a>
+        <a href="register.html"><button>VOTER REGISTER</button></a>
+        <a href="login.html"><button>VOTER LOGIN</button></a>
+        <a href="admin-login.html"><button>ELECTION COMMISSION</button></a>
+    </nav>
+
+    <!-- Hero Section with Clear Voting Image -->
+    <div class="hero-section">
+        <!-- High-quality voting image from a reliable CDN -->
+        <img class="hero-image" 
+             src="https://images.unsplash.com/photo-1540910419892-4a36d2c3266c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+             alt="Person casting their vote in an election - hand placing ballot in box"
+             onerror="this.src='https://images.pexels.com/photos/2696298/pexels-photo-2696298.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940'">
+        
+        <!-- Overlay with text -->
+        <div class="hero-overlay">
+            <h2>Your Vote, Your Voice</h2>
+            <p>Every vote counts. Participate in shaping the future of our democracy.</p>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="main-content">
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">🗳️</div>
+                <h3>Easy Registration</h3>
+                <p>Simple and secure voter registration process. Register in minutes and get ready to vote.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3>Secure Voting</h3>
+                <p>Your vote is protected with state-of-the-art encryption and security measures.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Real-time Results</h3>
+                <p>View election results in real-time with complete transparency and accuracy.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Windows Activation Message -->
+    <div class="activation-message">
+        <i>⚡</i> Activate Windows ⚡ Go to Settings to activate Windows.
+    </div>
+
+    <footer>
+        <p>© Developed By gates@2025</p>
+    </footer>
+
+    <script>
+        // Optional: Add any interactive features here
+        console.log("Online Voting Application System loaded");
+        
+        // Preload images for better performance
+        const images = [
+            'https://images.unsplash.com/photo-1540910419892-4a36d2c3266c?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
+            'https://images.pexels.com/photos/2696298/pexels-photo-2696298.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940'
+        ];
+        
+        images.forEach(src => {
+            const img = new Image();
+            img.src = src;
+        });
+    </script>
+</body>
+</html>

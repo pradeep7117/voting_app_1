@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vote Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            animation: gradientBG 15s ease infinite;
+            background-size: 400% 400%;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Decorative background elements */
+        body:before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+            z-index: -1;
+        }
+
+        body:after {
+            content: '';
+            position: absolute;
+            bottom: -50%;
+            left: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite reverse;
+            z-index: -1;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            margin-bottom: 30px;
+            text-align: center;
+            border-left: 8px solid #ffd700;
+            border-right: 8px solid #ffd700;
+            animation: slideDown 0.8s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        header h1 {
+            color: #1e3c72;
+            font-size: 2.8em;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        nav {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 60px;
+            backdrop-filter: blur(10px);
+            justify-content: center;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            animation: slideUp 0.8s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        nav button {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 8px 20px rgba(30, 60, 114, 0.4);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        nav button:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        nav button:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(255, 215, 0, 0.5);
+            background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+            border-color: #ffd700;
+        }
+
+        nav button:hover:before {
+            left: 100%;
+        }
+
+        nav button:active {
+            transform: translateY(0) scale(1);
+        }
+
+        #content {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 30px;
+            padding: 40px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            min-height: 400px;
+            animation: fadeIn 0.8s ease;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        h2 {
+            color: #1e3c72;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+            text-align: center;
+            border-bottom: 4px solid #ffd700;
+            padding-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Table styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        thead tr {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+        }
+
+        th {
+            padding: 15px !important;
+            font-size: 1.2em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        td {
+            padding: 15px !important;
+            border-bottom: 1px solid #e0e0e0;
+            background: white;
+        }
+
+        tr:hover td {
+            background: #f8f9fa;
+            transition: background 0.3s ease;
+        }
+
+        /* Vote button styling */
+        td button {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+        }
+
+        td button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.5);
+            background: linear-gradient(135deg, #20c997 0%, #28a745 100%);
+        }
+
+        /* Feedback form styling */
+        #feedbackForm {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 30px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        #feedbackForm label {
+            display: block;
+            margin-bottom: 15px;
+            color: #1e3c72;
+            font-weight: 700;
+            font-size: 1.3em;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        #feedbackForm textarea {
+            width: 100%;
+            padding: 20px;
+            border: 3px solid #e0e0e0;
+            border-radius: 15px;
+            font-size: 1.1em;
+            min-height: 150px;
+            resize: vertical;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        #feedbackForm textarea:focus {
+            border-color: #1e3c72;
+            box-shadow: 0 0 0 5px rgba(30, 60, 114, 0.2);
+            outline: none;
+        }
+
+        #feedbackForm button {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        #feedbackForm button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.5);
+            background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+        }
+
+        #feedbackMessage {
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background: #d4edda;
+            color: #155724;
+            border-left: 5px solid #28a745;
+        }
+
+        /* Vote status table specific */
+        table[style*="50%"] {
+            margin: 30px auto;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        table[style*="50%"] td:first-child {
+            font-weight: 700;
+            color: #1e3c72;
+            background: #f8f9fa;
+        }
+
+        /* Message styling */
+        p {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 40px;
+            font-size: 1.3em;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border: 2px dashed #ffd700;
+        }
+
+        /* Responsive design */
+        @media (max-width: 1024px) {
+            header h1 {
+                font-size: 2.2em;
+            }
+
+            nav button {
+                padding: 12px 25px;
+                font-size: 1em;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            header {
+                padding: 20px;
+            }
+
+            header h1 {
+                font-size: 1.8em;
+                letter-spacing: 2px;
+            }
+
+            nav {
+                flex-direction: column;
+                border-radius: 30px;
+                padding: 20px;
+            }
+
+            nav button {
+                width: 100%;
+                padding: 12px 20px;
+            }
+
+            #content {
+                padding: 20px;
+            }
+
+            h2 {
+                font-size: 1.6em;
+            }
+
+            table {
+                font-size: 0.9em;
+            }
+
+            th, td {
+                padding: 10px !important;
+            }
+
+            #feedbackForm {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.4em;
+            }
+
+            h2 {
+                font-size: 1.3em;
+            }
+
+            th, td {
+                padding: 8px !important;
+                font-size: 0.85em;
+            }
+
+            td button {
+                padding: 6px 15px;
+                font-size: 0.9em;
+            }
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+        }
+
+        /* Loading animation */
+        .loading {
+            text-align: center;
+            padding: 50px;
+        }
+
+        .loading:after {
+            content: '...';
+            animation: dots 1.5s steps(5, end) infinite;
+            font-size: 2em;
+            color: #1e3c72;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+
+        /* Focus visible for accessibility */
+        button:focus-visible, textarea:focus-visible {
+            outline: 3px solid #ffd700;
+            outline-offset: 3px;
+        }
+
+        /* Animation for content changes */
+        #content > * {
+            animation: contentFade 0.5s ease;
+        }
+
+        @keyframes contentFade {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Vote Dashboard</h1>
+    </header>
+
+    <nav>
+        <button onclick="loadCandidates()">View Candidates</button>
+        <button onclick="loadVoteStatus()">My Vote Status</button>
+        <button onclick="loadFeedbackForm()">Submit Feedback</button>
+        <button onclick="logout()">LogOut</button>
+    </nav>
+    
+    <div id="content">
+        <h2>Select an option above</h2>
+    </div>
+
+    <script>
+        async function loadCandidates() {
+            try {
+                console.log("Fetching candidates...");
+                const response = await fetch('/votes/results');
+                if (!response.ok) throw new Error("Failed to fetch candidates.");
+
+                const candidates = await response.json();
+                console.log("Candidates received:", candidates);
+
+                const contentDiv = document.getElementById('content');
+                contentDiv.innerHTML = "<h2>List of Candidates</h2>";
+
+                if (!candidates || candidates.length === 0) {
+                    console.warn("⚠ No candidates found in API response!");
+                    contentDiv.innerHTML += "<p>No candidates available.</p>";
+                    return;
+                }
+
+                // Create table
+                let tableHTML = `
+                    <table border="1" style="width: 100%; border-collapse: collapse; text-align: left;">
+                        <thead>
+                            <tr>
+                                <th style="padding: 10px; background-color: #f2f2f2;">Candidate Name</th>
+                                <th style="padding: 10px; background-color: #f2f2f2;">Votes</th>
+                                <th style="padding: 10px; background-color: #f2f2f2;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                candidates.forEach(candidate => {
+                    tableHTML += `
+                        <tr>
+                            <td style="padding: 10px;">${candidate[0]}</td>
+                            <td style="padding: 10px;">${candidate[1]}</td>
+                            <td style="padding: 10px;">
+                                <button onclick="castVote('${candidate[0]}')" style="padding: 5px 10px; cursor: pointer;">Vote</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                tableHTML += `</tbody></table>`;
+
+                contentDiv.innerHTML += tableHTML;
+
+            } catch (error) {
+                console.error("Error loading candidates:", error);
+                document.getElementById('content').innerHTML = "<p>Error loading candidates.</p>";
+            }
+        }
+
+        async function castVote(candidateName) {
+            const voterId = localStorage.getItem('voterId');
+
+            if (!voterId) {
+                alert("Voter ID not found. Please log in.");
+                window.location.href = "login.html";
+                return;
+            }
+
+            try {
+                console.log(`Casting vote for: ${candidateName}`);
+                const response = await fetch(`/votes/cast?voterId=${voterId}&candidateName=${candidateName}`, { method: 'POST' });
+
+                const responseText = await response.text();
+                console.log("Response:", responseText);
+
+                if (response.ok) {
+                    alert(`✅ ${responseText}`);
+                    loadVoteStatus();
+                } else {
+                    alert(`❌ ${responseText}`);
+                }
+            } catch (error) {
+                console.error("Voting error:", error);
+                alert("An error occurred while voting. Please try again.");
+            }
+        }
+        
+        async function loadVoteStatus() {
+            const voterId = localStorage.getItem('voterId');
+            if (!voterId) {
+                alert("Voter ID not found. Please log in.");
+                return;
+            }
+
+            try {
+                console.log("Fetching vote status...");
+                const response = await fetch(`/votes/status?voterId=${voterId}`);
+                if (!response.ok) throw new Error("Failed to fetch vote status.");
+
+                const voteStatus = await response.json();
+                console.log("Vote status received:", voteStatus);
+
+                const contentDiv = document.getElementById('content');
+                contentDiv.innerHTML = "<h2>Your Vote Status</h2>";
+
+                // Create table
+                let tableHTML = `
+                    <table border="1" style="width: 50%; border-collapse: collapse; text-align: left;">
+                        <thead>
+                            <tr>
+                                <th style="padding: 10px; background-color: #f2f2f2;">Voter ID</th>
+                                <th style="padding: 10px; background-color: #f2f2f2;">Candidate Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="padding: 10px;">${voterId}</td>
+                                <td style="padding: 10px;">${voteStatus.candidateName}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                `;
+
+                contentDiv.innerHTML += tableHTML;
+
+            } catch (error) {
+                console.error("Error fetching vote status:", error);
+                document.getElementById('content').innerHTML = "<p>You have not voted yet.</p>";
+            }
+        }
+        
+        function loadFeedbackForm() {
+            const contentDiv = document.getElementById('content');
+            contentDiv.innerHTML = `
+                <h2>Submit Feedback</h2>
+                <form id="feedbackForm">
+                    <label for="feedback">Your Feedback:</label>
+                    <textarea id="feedback" required placeholder="Enter your feedback here..."></textarea>
+                    <br>
+                    <button type="submit">Submit Feedback</button>
+                </form>
+                <p id="feedbackMessage" style="color: green; display: none;"></p>
+            `;
+
+            document.getElementById('feedbackForm').onsubmit = async function(e) {
+                e.preventDefault();
+                const voterId = localStorage.getItem('voterId'); 
+                const feedbackText = document.getElementById('feedback').value;
+
+                if (!voterId) {
+                    alert("Voter ID not found. Please log in.");
+                    return;
+                }
+
+                try {
+                    const response = await fetch('/feedback/submit', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ voterId, feedbackText })
+                    });
+
+                    if (response.ok) {
+                        document.getElementById('feedbackMessage').innerText = "✅ Feedback submitted successfully!";
+                        document.getElementById('feedbackMessage').style.display = "block";
+                        document.getElementById('feedback').value = '';
+                    } else {
+                        alert("❌ Failed to submit feedback.");
+                    }
+                } catch (error) {
+                    console.error("Error submitting feedback:", error);
+                    alert("❌ An error occurred. Please try again.");
+                }
+            };
+        }
+
+        function logout() {
+            console.log("Logging out...");
+            localStorage.removeItem('voterId');
+            localStorage.removeItem('username'); 
+            localStorage.removeItem('password');
+            window.location.href = "index.html"; // ✅ Redirect to homepage
+        }
+    </script>
+</body>
+</html>

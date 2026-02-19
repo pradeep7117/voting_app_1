@@ -1,0 +1,39 @@
+body {
+  background-image: url("https://img.freepik.com/free-vector/indian-flag-theme-republic-day-watercolor-texture-decorative-background_1055-16780.jpg?ga=GA1.1.1244988427.1744177007&semt=ais_country_boost&w=740");
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background: rgba(0, 0, 0, 0.7); 
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+nav {
+    background: rgba(0, 0, 0, 0.6);
+    padding: 10px;
+    text-align: center;
+}
+
+button {
+    margin: 5px;
+    padding: 10px;
+    cursor: pointer;
+    background: white;
+    border: none;
+    border-radius: 5px;
+}
+
+#content {
+    background: rgba(255, 255, 255, 0.8); 
+    padding: 20px;
+    margin: 20px auto;
+    width: 80%;
+    border-radius: 10px;
+}

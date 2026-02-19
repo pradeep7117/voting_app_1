@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voter Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            animation: gradientBG 15s ease infinite;
+            background-size: 400% 400%;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Decorative background elements */
+        body:before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+            z-index: -1;
+        }
+
+        body:after {
+            content: '';
+            position: absolute;
+            bottom: -50%;
+            left: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(255,215,0,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite reverse;
+            z-index: -1;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        header {
+            width: 100%;
+            max-width: 500px;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border-left: 8px solid #ffd700;
+            border-right: 8px solid #ffd700;
+            animation: slideDown 0.8s ease;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        header h1 {
+            color: #1e3c72;
+            font-size: 2.5em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        #loginForm {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 500px;
+            animation: slideUp 0.8s ease;
+            border-bottom: 8px solid #ffd700;
+            backdrop-filter: blur(10px);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        label {
+            display: block;
+            margin-bottom: 12px;
+            color: #1e3c72;
+            font-weight: 700;
+            font-size: 1.2em;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            position: relative;
+            padding-left: 15px;
+        }
+
+        label:before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 24px;
+            background: #ffd700;
+            border-radius: 3px;
+        }
+
+        input {
+            width: 100%;
+            padding: 18px 20px;
+            margin-bottom: 30px;
+            border: 3px solid #e0e0e0;
+            border-radius: 15px;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            background: white;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #1e3c72;
+            box-shadow: 0 0 0 5px rgba(30, 60, 114, 0.2);
+            transform: translateY(-3px);
+        }
+
+        input:hover {
+            border-color: #ffd700;
+        }
+
+        input::placeholder {
+            color: #999;
+            font-style: italic;
+            font-size: 0.95em;
+        }
+
+        /* Input icon styling */
+        input[type="text"] {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="%231e3c72" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>');
+            background-repeat: no-repeat;
+            background-position: 15px center;
+            background-size: 24px;
+            padding-left: 55px;
+        }
+
+        input[type="password"] {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="%231e3c72" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>');
+            background-repeat: no-repeat;
+            background-position: 15px center;
+            background-size: 24px;
+            padding-left: 55px;
+        }
+
+        button {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.3em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            box-shadow: 0 8px 25px rgba(30, 60, 114, 0.5);
+            margin: 20px 0 15px;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid transparent;
+        }
+
+        button:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s ease;
+        }
+
+        button:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(255, 215, 0, 0.6);
+            background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+            border-color: #ffd700;
+        }
+
+        button:hover:before {
+            left: 100%;
+        }
+
+        button:active {
+            transform: translateY(0) scale(1);
+        }
+
+        /* Link styling */
+        a {
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        a[href="register.html"] {
+            color: #ffd700;
+            font-weight: 700;
+            font-size: 1.2em;
+            padding: 10px 25px;
+            background: rgba(30, 60, 114, 0.1);
+            border-radius: 30px;
+            margin-left: 10px;
+            border: 2px solid #ffd700;
+            transition: all 0.3s ease;
+        }
+
+        a[href="register.html"]:hover {
+            background: #ffd700;
+            color: #1e3c72;
+            transform: scale(1.1);
+            box-shadow: 0 5px 20px rgba(255, 215, 0, 0.5);
+        }
+
+        a[href="index.html"] {
+            display: inline-block;
+            margin-top: 25px;
+        }
+
+        a[href="index.html"] h1 {
+            color: white;
+            font-size: 1.5em;
+            font-weight: 600;
+            padding: 12px 35px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 40px;
+            backdrop-filter: blur(5px);
+            border: 3px solid #ffd700;
+            transition: all 0.3s ease;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        a[href="index.html"]:hover h1 {
+            background: #ffd700;
+            color: #1e3c72;
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.6);
+        }
+
+        /* Error message styling */
+        #errorMessage {
+            margin-top: 25px;
+            padding: 18px 25px;
+            border-radius: 12px;
+            background: rgba(220, 53, 69, 0.95);
+            border-left: 6px solid #ffd700;
+            color: white !important;
+            font-weight: 600;
+            font-size: 1.1em !important;
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            animation: shake 0.5s ease;
+            display: none;
+            box-shadow: 0 10px 25px rgba(220, 53, 69, 0.4);
+            backdrop-filter: blur(5px);
+            line-height: 1.6;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-8px); }
+            20%, 40%, 60%, 80% { transform: translateX(8px); }
+        }
+
+        /* New user text styling */
+        form > a[href="register.html"] {
+            display: inline;
+            font-size: 1.1em;
+            color: #1e3c72;
+            background: none;
+            border: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        form > a[href="register.html"]:hover {
+            background: none;
+            transform: none;
+            box-shadow: none;
+            color: #ffd700;
+        }
+
+        /* Responsive design */
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+
+            header {
+                padding: 20px;
+            }
+
+            header h1 {
+                font-size: 2em;
+            }
+
+            #loginForm {
+                padding: 30px;
+            }
+
+            label {
+                font-size: 1.1em;
+            }
+
+            input {
+                padding: 15px 15px 15px 50px;
+                font-size: 1em;
+            }
+
+            button {
+                padding: 15px;
+                font-size: 1.2em;
+            }
+
+            a[href="index.html"] h1 {
+                font-size: 1.3em;
+                padding: 10px 25px;
+            }
+
+            #errorMessage {
+                font-size: 1em;
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 400px) {
+            header h1 {
+                font-size: 1.6em;
+            }
+
+            #loginForm {
+                padding: 20px;
+            }
+
+            input {
+                padding: 12px 12px 12px 45px;
+                background-size: 20px;
+            }
+        }
+
+        /* Loading animation for button */
+        button.loading {
+            position: relative;
+            color: transparent;
+        }
+
+        button.loading:after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            top: 50%;
+            left: 50%;
+            margin-left: -12px;
+            margin-top: -12px;
+            border: 3px solid white;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spinner 0.8s linear infinite;
+        }
+
+        @keyframes spinner {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Form text styling */
+        form {
+            color: #1e3c72;
+            font-size: 1.1em;
+            text-align: center;
+        }
+
+        br {
+            display: none;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+        }
+
+        /* Focus visible for accessibility */
+        input:focus-visible, button:focus-visible, a:focus-visible {
+            outline: 3px solid #ffd700;
+            outline-offset: 3px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Voter Login</h1>
+    </header>
+
+    <form id="loginForm">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required placeholder="Enter your username">
+        
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required placeholder="Enter your password">
+        
+        <button type="submit">Login</button><br><br>
+        New User <a href="register.html">Click Here</a>
+    </form>
+    
+    <a href="index.html"><h1>Back</h1></a>
+
+    <h1><p id="errorMessage" style="color: white; display: none;"></p></h1>
+
+    <script>
+        document.getElementById('loginForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const errorMessage = document.getElementById("errorMessage");
+            errorMessage.style.display = "none"; // ✅ Hide previous error messages
+
+            const data = {
+                username: e.target.username.value,
+                password: e.target.password.value,
+            };
+
+            try {
+                console.log("Sending login request...");
+                const response = await fetch('/users/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                console.log("Response Status:", response.status);
+
+                if (response.ok) {
+                    const user = await response.json();
+                    console.log("Login Successful:", user);
+
+                    // ✅ Store voter ID in localStorage after login
+                    localStorage.setItem('voterId', user.id);
+                    console.log("Stored voterId:", user.id);
+
+                    // ✅ Redirect to the Vote Dashboard
+                    window.location.href = 'vote.html';
+                } else {
+                    errorMessage.innerText = "Invalid username or password. or Your Not Authorized For Cloud plzz waiting ";
+                    errorMessage.style.display = "block";
+                }
+            } catch (error) {
+                console.error("Login error:", error);
+                errorMessage.innerText = "An error occurred. Please try again.";
+                errorMessage.style.display = "block";
+            }
+        };
+    </script>
+</body>
+</html>
